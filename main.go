@@ -33,7 +33,17 @@ func logRequest(r *http.Request) {
 	fmt.Println("Got request!", method, uri)
 }
 
+type Log struct {
+	contents []string
+}
+
+func (l *Log) Add(addendum string) *Log {
+	l.contents = append(l.contents, addendum)
+	return l
+}
+
 func main() {
+	captainsLog := &Log{}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 		fmt.Fprintf(w, "Hello! you've requested %s\n", r.URL.Path)
@@ -44,6 +54,23 @@ func main() {
 		}
 
 		txt := r.Form.Get("text")
+		if txt[0] == '!' {
+			// This is a command string
+			tokens := strings.Split(txt, " ")
+			cmd := strings.ToLower(tokens[0])
+			switch cmd {
+			case "!show":
+				dump := strings.Join(captainsLog.contents, "\n")
+				fmt.Fprintf(w, dump)
+			case "!search":
+				fmt.Fprintf(w, "Search command\n")
+			default:
+				fmt.Fprintf(w, "Unrecognized command!\n")
+			}
+		} else {
+			// Just a message to log
+			captainsLog.Add(txt)
+		}
 		fmt.Fprintf(w, "the text you sent is %s\n", txt)
 	})
 
