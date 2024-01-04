@@ -1,4 +1,4 @@
-module github.com/digitalocean/sample-golang
+module github.com/elliotrushton/captainslog-slack
 
 go 1.13
 

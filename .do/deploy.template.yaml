@@ -1,7 +1,7 @@
 spec:
-  name: sample-golang
+  name: captainslog-slack
   services:
   - name: web
     git:
       branch: main
-      repo_clone_url: https://github.com/digitalocean/sample-golang.git
+      repo_clone_url: https://github.com//elliotrushton/captainslog-slack.git

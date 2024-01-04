@@ -1,6 +1,6 @@
-name: sample-golang
+name: captainslog-slack
 services:
 - name: web
   github:
-    repo: digitalocean/sample-golang
+    repo: elliotrushton/captainslog-slack
     branch: main
