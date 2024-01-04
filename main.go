@@ -37,6 +37,14 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 		fmt.Fprintf(w, "Hello! you've requested %s\n", r.URL.Path)
+		err := r.ParseForm()
+		if err != nil {
+			fmt.Println("Error parsing form from request: " + err.Error())
+			return
+		}
+
+		txt := r.Form.Get("text")
+		fmt.Fprintf(w, "the text you sent is %s\n", txt)
 	})
 
 	http.HandleFunc("/cached", func(w http.ResponseWriter, r *http.Request) {
