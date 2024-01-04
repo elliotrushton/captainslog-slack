@@ -42,11 +42,16 @@ func (l *Log) Add(addendum string) *Log {
 	return l
 }
 
+func (l *Log) String() string {
+	dump := strings.Join(l.contents, "\n")
+	return dump + "\n"
+}
+
 func main() {
 	captainsLog := &Log{}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
-		fmt.Fprintf(w, "Hello! you've requested %s\n", r.URL.Path)
+
 		err := r.ParseForm()
 		if err != nil {
 			fmt.Println("Error parsing form from request: " + err.Error())
@@ -60,8 +65,7 @@ func main() {
 			cmd := strings.ToLower(tokens[0])
 			switch cmd {
 			case "!show":
-				dump := strings.Join(captainsLog.contents, "\n")
-				fmt.Fprintf(w, dump)
+				fmt.Fprintf(w, captainsLog.String())
 			case "!search":
 				fmt.Fprintf(w, "Search command\n")
 			default:
@@ -70,8 +74,8 @@ func main() {
 		} else {
 			// Just a message to log
 			captainsLog.Add(txt)
+			fmt.Fprintf(w, "%s\n", txt)
 		}
-		fmt.Fprintf(w, "the text you sent is %s\n", txt)
 	})
 
 	http.HandleFunc("/cached", func(w http.ResponseWriter, r *http.Request) {
