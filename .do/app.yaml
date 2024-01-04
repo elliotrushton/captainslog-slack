@@ -4,3 +4,4 @@ services:
   github:
     repo: elliotrushton/captainslog-slack
     branch: main
+    deploy_on_push: true
