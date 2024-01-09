@@ -1,3 +1,5 @@
+variable "slack_token" {}
+
 resource "digitalocean_app" "captainslog-slack" {
   spec {
     name   = "captainslog-slack"
@@ -18,6 +20,13 @@ resource "digitalocean_app" "captainslog-slack" {
         repo = "elliotrushton/captainslog-slack"
         branch         = "main"
 	deploy_on_push = "true"
+      }
+
+      env {
+        key = "SLACK_TOKEN"
+        value = var.slack_token
+        scope = "RUN_TIME"
+        type = "SECRET"
       }
     }
   }
