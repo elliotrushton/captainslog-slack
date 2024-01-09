@@ -8,6 +8,9 @@ import (
 	"strings"
 
 	"github.com/gofrs/uuid"
+
+	"github.com/elliotrushton/captainslog-slack/clock"
+	"github.com/elliotrushton/captainslog-slack/logbook"
 )
 
 const startupMessage = `Captains Log booting up...`
@@ -18,22 +21,8 @@ func logRequest(r *http.Request) {
 	fmt.Println("Got request!", method, uri)
 }
 
-type Log struct {
-	contents []string
-}
-
-func (l *Log) Add(addendum string) *Log {
-	l.contents = append(l.contents, addendum)
-	return l
-}
-
-func (l *Log) String() string {
-	dump := strings.Join(l.contents, "\n")
-	return dump + "\n"
-}
-
 func main() {
-	captainsLog := &Log{}
+	captainsLog := &logbook.Log{}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 
@@ -58,7 +47,8 @@ func main() {
 			}
 		} else {
 			// Just a message to log
-			captainsLog.Add(txt)
+			when := clock.RealClock{}
+			captainsLog.Add(txt, when.Now())
 			fmt.Fprintf(w, "%s\n", txt)
 		}
 	})
