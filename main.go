@@ -15,10 +15,18 @@ import (
 
 const startupMessage = `Captains Log booting up...`
 
+const DEBUG = true
+
 func logRequest(r *http.Request) {
 	uri := r.RequestURI
 	method := r.Method
+
 	fmt.Println("Got request!", method, uri)
+
+	if DEBUG {
+		fmt.Println("Headers: ", r.Header)
+		fmt.Println("Body: ", r.Body)
+	}
 }
 
 func main() {
