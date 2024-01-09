@@ -36,7 +36,10 @@ func main() {
 		}
 
 		if DEBUG {
-			fmt.Println("Form: ", r.Form)
+			fmt.Println("Form:")
+			for k, v := range r.Form {
+				fmt.Printf("\t%s: %s\n", k, v)
+			}
 		}
 
 		txt := r.Form.Get("text")
