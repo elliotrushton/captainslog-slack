@@ -11,6 +11,7 @@ import (
 
 	"github.com/elliotrushton/captainslog-slack/clock"
 	"github.com/elliotrushton/captainslog-slack/logbook"
+	"github.com/elliotrushton/captainslog-slack/slacker"
 )
 
 const startupMessage = `Captains Log booting up...`
@@ -27,6 +28,8 @@ func logRequest(r *http.Request) {
 
 func main() {
 	captainsLog := &logbook.Log{}
+	slackClient := slacker.NewSlacker()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
 		err := r.ParseForm()
@@ -49,7 +52,11 @@ func main() {
 			cmd := strings.ToLower(tokens[0])
 			switch cmd {
 			case "!show":
-				fmt.Fprintf(w, captainsLog.String())
+				tz, err := slackClient.GetTimezoneForUser(r.Form.Get("user_id"))
+				if err != nil {
+					fmt.Println("Error getting Slack users tz: ", err)
+				}
+				fmt.Fprintf(w, captainsLog.String(tz))
 			case "!search":
 				fmt.Fprintf(w, "Search command\n")
 			default:

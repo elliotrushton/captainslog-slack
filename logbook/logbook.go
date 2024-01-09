@@ -20,11 +20,11 @@ func (l *Log) Add(addendum string, when time.Time) *Log {
 	return l
 }
 
-func (l *Log) String() string {
+func (l *Log) String(tz *time.Location) string {
 
 	report := ""
 	for _, entry := range l.contents {
-		report = fmt.Sprintf("%s%s - %s\n", report, entry.when.Format("15:04"), entry.message)
+		report = fmt.Sprintf("%s%s - %s\n", report, entry.when.In(tz).Format("15:04"), entry.message)
 	}
 	return report
 }
