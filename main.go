@@ -23,21 +23,20 @@ func logRequest(r *http.Request) {
 
 	fmt.Println("Got request!", method, uri)
 
-	if DEBUG {
-		fmt.Println("Headers: ", r.Header)
-		fmt.Println("Body: ", r.Body)
-	}
 }
 
 func main() {
 	captainsLog := &logbook.Log{}
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		logRequest(r)
-
 		err := r.ParseForm()
 		if err != nil {
 			fmt.Println("Error parsing form from request: " + err.Error())
 			return
+		}
+
+		if DEBUG {
+			fmt.Println("Form: ", r.Form)
 		}
 
 		txt := r.Form.Get("text")
