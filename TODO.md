@@ -1,5 +1,4 @@
 # Incomplete Features
- * Add Slack api token to terraform
 
 
 # New Features
