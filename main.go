@@ -9,7 +9,7 @@ import (
 
 	"github.com/gofrs/uuid"
 
-	"github.com/elliotrushton/captainslog-slack/clock"
+	"github.com/elliotrushton/captainslog-slack/actions"
 	"github.com/elliotrushton/captainslog-slack/logbook"
 	"github.com/elliotrushton/captainslog-slack/slacker"
 )
@@ -52,21 +52,24 @@ func main() {
 			cmd := strings.ToLower(tokens[0])
 			switch cmd {
 			case "!show":
-				tz, err := slackClient.GetTimezoneForUser(r.Form.Get("user_id"))
-				if err != nil {
-					fmt.Println("Error getting Slack users tz: ", err)
-				}
-				fmt.Fprintf(w, captainsLog.String(tz))
+				output := actions.Show(captainsLog, slackClient, r.Form.Get("user_id"))
+				fmt.Fprintf(w, output)
 			case "!search":
 				fmt.Fprintf(w, "Search command\n")
+			case "!todo":
+			case "!todos":
+				output := actions.Todo(captainsLog, tokens)
+				fmt.Fprintf(w, output)
+			case "!done":
+				output := actions.CompletedTodo(captainsLog, tokens)
+				fmt.Fprint(w, output)
 			default:
 				fmt.Fprintf(w, "Unrecognized command!\n")
 			}
 		} else {
 			// Just a message to log
-			when := clock.RealClock{}
-			captainsLog.Add(txt, when.Now())
-			fmt.Fprintf(w, "%s\n", txt)
+			output := actions.Add(captainsLog, txt)
+			fmt.Fprintf(w, output)
 		}
 	})
 
